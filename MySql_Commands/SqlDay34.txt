@@ -1,0 +1,296 @@
+#checking available databases
+show databases;
+
+//UC-1
+#Creating database
+create database employee_payroll_services;
+
+#using employee_payroll_services database
+use employee_payroll_services;
+
+//UC2
+#creating table
+create table employee_payroll
+(
+	id int not null primary key auto_increment,
+	name varchar(45) not null,
+	salary Double not null,
+	start_date date not null
+);
+
+
+//UC3
+#inserting data
+insert into employee_payroll (name,salary,start_date)
+values
+('Bill',1000000.00,'2018-01-03'),
+('Terisa',2000000.00,'2019-11-13'),
+('Charlie',3000000.00,'2020-05-21');
+
+//UC4
+#retrieve all data from table
+select * from employee_payroll;
+
+##
+# Ability to retrieve salary data for a particular employee as well as 
+# all employees who have joined in a particular data range from the
+# payroll service database
+##
+#get salary by name
+SELECT salary FROM employee_payroll
+WHERE name = 'Bill';
+
+//UC5
+
+#get all the details between the range of dates
+select * from employee_payroll
+WHERE date BETWEEN CAST('2018-01-01' AS DATE) AND DATE(NOW());
+
+//UC6
+
+##
+#Ability to add Gender to Employee
+#Payroll Table and Update the Rows to
+#reflect the correct Employee Gender
+##
+#adding new column to table
+
+alter table employee_payroll
+add column gender char not null after name;
+
+#setting gender for employee
+update employee_payroll set gender = 'M' where id = 1;
+update employee_payroll set gender = 'F' where id = 2;
+update employee_payroll set gender = 'M' where id = 3;
+
+##
+#finding SUM, AVG, MIN, MAX AND NUMBER OF EMPLOYEES BY GENDER
+##
+
+//UC7
+
+#get sum of salaries
+select salary,sum(salary) from employee_payroll group by gender;
+
+#get sum of salaries by gender
+select gender,sum(salary) from employee_payroll group by gender;
+
+#get average salary
+select avg(salary) from employee_payroll;
+
+#get average of salaries by gender
+select gender,avg(salary) from employee_payroll
+group by gender;
+
+#get min salary
+select min(salary) from employee_payroll;
+
+#get min of salaries by gender
+select gender,min(salary) from employee_payroll
+group by gender;
+
+#get max salary
+select max(salary) from employee_payroll;
+
+#get max of salaries by gender
+select gender,max(salary) from employee_payroll
+group by gender;
+
+#get number of employees by gender
+select gender,count(*) from employee_payroll
+group by gender;
+
+		   section 2: ER-Diagram 
+
+##
+# Ability to extend employee_payroll data to
+# store employee information like employee phone, address
+# and department
+##
+
+alter table employee_payroll add phonenumber varchar(45) not null;
+
+#adding phonenumbers to the employees
+update employee_payroll set phonenumber='+91 8653291047' where id= 1;
+update employee_payroll set phonenumber = '+66 7485910473' where id = 2;
+update employee_payroll set phonenumber = '+55 7542189608' where id = 3;
+
+#adding address column with default value
+alter table employee_payroll add address varchar(200) not null default 'UK'; 
+
+
+//UC9
+
+##
+# Ability to extend employee_payroll table to have Basic Pay,
+# Deductions, Taxable Pay, Income Tax, Net Pay
+##
+#changing salary to basic pay column
+
+#changing salary to basic pay column
+alter table employee_payroll rename column salary to basic_pay;
+
+#adding deductions column
+alter table employee_payroll add deductions Double not null after basic_pay;
+
+update employee_payroll set deductions = 1500 where id = 1;
+update employee_payroll set deductions = 30000.0 where id = 2;
+update employee_payroll set deductions = 45000.0 where id = 3;
+
+#adding taxable_pay column
+alter table employee_payroll add taxable_pay Double not null after deductions;
+
+update employee_payroll set taxable_pay = 10000.00 where id =1 ;
+update employee_payroll set taxable_pay = 20000.00 where id =2 ;
+update employee_payroll set taxable_pay = 30000.00 where id =3 ;
+
+
+#adding tax column
+alter table employee_payroll 
+add tax Double not null after taxable_pay;
+
+update employee_payroll set tax = 10000.00 where id = 1;
+update employee_payroll set tax = 20000.00 where id = 2;
+update employee_payroll set tax = 30000.00 where id = 3;
+
+#adding net_pay column
+alter table employee_payroll add net_pay Double not null after tax;
+
+update  employee_payroll set net_pay = basic_pay-deductions-taxable_pay-tax where id = 1;
+update  employee_payroll set net_pay = basic_pay-deductions-taxable_pay-tax where id = 2;
+
+//UC9
+
+##
+# Ability to make Terissa as part of
+# Sales and Marketing Department
+##
+#adding department column
+
+alter table employee_payroll add department varchar(50) not null after name;
+
+#inserting departments
+update employee_payroll set department = 'Sales' where id = 1 or id =2 ;
+update employee_payroll set department = 'Marketing' where id = 3 ;
+
+#******************* after drawing ER-Diagram ********************
+
+             #*********creating table: company ***********
+create table company
+(
+	comp_id int not null primary key auto_increment,
+	comp_name varchar(50)
+);
+
+desc company;
+
+insert into company (comp_name)
+values ('company_1');
+select * from company;
+
+          #*********creating table: employee ***********
+create table employee
+(
+	id int not null primary key auto_increment,
+	name varchar(45) not null,
+	comp_id int not null,
+	foreign key (comp_id) references company(comp_id)
+);
+
+alter table employee add phonenumber varchar(20) after name;
+alter table employee add gender char after name;
+
+desc employee;
+
+#inserting values from employee_payroll to employee
+insert into employee (name,comp_id)
+values
+('Bill',1),
+('Terisa',1),
+('Charlie',1);
+
+update employee set phonenumber = '+91 7845120369' where id = 1;
+update employee set phonenumber = '+66 9865320147' where id = 2;
+update employee set phonenumber = '+1 7946130258' where id = 3;
+
+update employee set gender = 'M'
+where id = 1 or id = 3;
+
+             #*********creating table: payroll ***********
+create table payroll
+(
+	basic_pay double not null primary key,
+	deductions double,
+	taxable_pay double,
+	tax double,
+	net_pay double not null,
+	start_date date not null,
+	id int not null,
+	foreign key (id) references employee(id)
+);
+desc payroll;
+
+#inserting data
+insert into payroll (basic_pay,deductions,taxable_pay,tax,net_pay,start_date,id)
+values
+(1000000.00,15000.00,10000.00,10000.00,basic_pay-deductions-taxable_pay-tax,'2018-01-03',1),
+(2000000.00,30000.00,20000.00,20000.00,basic_pay-deductions-taxable_pay-tax,'2019-11-13',2),
+(3000000.00,45000.00,30000.00,30000.00,basic_pay-deductions-taxable_pay-tax,'2020-05-21',3),
+(1500000.00,50000.00,25000.00,10000.00,basic_pay-deductions-taxable_pay-tax,'2019-11-13',2);
+
+select * from payroll;
+
+
+                 #*********creating table: department ***********
+create table department
+(
+	dept_id int not null primary key auto_increment,
+	dept_name varchar(45) not null
+);
+
+desc department;
+
+#insert data
+insert into department (dept_name)
+values ('Sales'), ('Marketing');
+
+
+       #*********creating joint table: dept_employee ***********
+create table dept_employee
+(
+	dept_id int not null,
+	emp_id int not null
+);
+
+desc dept_employee;
+
+insert into dept_employee (dept_id,emp_id)
+values
+(1,1),
+(1,2),
+(2,3),
+(2,2);
+
+
+### retrieving data after normalization
+#get sum of basic pay by gender
+
+#get sum of basic pay by gender
+select gender,sum(basic_pay) as total_wage from employee as E
+join payroll as P on E.id = P.id
+group by gender;
+
+#get avg basic pay by gender
+select gender, avg(basic_pay) as average from employee as E
+join payroll as P on E.id = P.id
+group by gender;
+
+#get min of basic salary by gender
+select gender, min(basic_pay) as minimum_pay from employee as E
+join payroll as P on E.id = P.id
+group by gender;
+
+#get max of basic salary by gender
+select gender, max(basic_pay) as maximum_pay from employee as E
+join payroll as P on E.id = P.id
+group by gender;
