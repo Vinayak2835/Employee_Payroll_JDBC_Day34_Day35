@@ -5,4 +5,4 @@ public interface DbConnection {
 	String url ="jdbc:mysql://localhost:3306/emppayroll";
 	String userName ="root";
 	String password = "root";
-}
+ }
