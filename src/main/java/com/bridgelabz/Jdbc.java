@@ -106,22 +106,31 @@ public class Jdbc {
 		          System.out.println("Data insert successfully");
 		          break; 
 		          //UC3-UC4
-		      case 3:System.out.println("Enter the name do you wants to update the basic_pay");
+		      case 3:
+		    	     System.out.println("Enter the name do you wants to update the basic_pay");
 		             String name1 = input.nextLine();
 		             pselect.execute();
 		             rs = pselect.getResultSet();
 		             while(rs.next()) {
-		            	 if(rs.getString("name").equals(name1)) {
-		            		 System.out.println(name1+" Name matches");
-		            		 System.out.println("Enter the basic salary do you wants to update");
-		            		  basic_pay = scanner.nextDouble();
-		            		 pupdate.setDouble(1, basic_pay);
-		            		 pupdate.setString(2, name1);
-		            		 pupdate.executeUpdate();
-		            		 System.out.println("Data updated successfully");
+		            	 try {	            	
+		            	      if(rs.getString("name").equals(name1)) {
+		            		    System.out.println(name1+" Name matches");
+		            		    System.out.println("Enter the basic salary do you wants to update");
+		            		    basic_pay = scanner.nextDouble();
+		            		    pupdate.setDouble(1, basic_pay);
+		            		    pupdate.setString(2, name1);
+		            		    pupdate.executeUpdate();
+		            		    System.out.println("Data updated successfully");
+		            		 }
+		            		 else {
+		            		     throw new JdbcException("Enter a valid Name");
+		            		  }
+				 }		            		 
+		            	 catch(JdbcException e ) {            				
+		            	       System.out.println(e.errormessage);    		 
 		            	 }
 		             }
-                  	 break;
+		            break;
 		      case 4:System.out.println("Enter a name do you wants to delete");
 		             name = input.nextLine();
 		             pdelete.setString(1, name);
