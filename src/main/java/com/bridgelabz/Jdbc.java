@@ -11,7 +11,6 @@ import java.util.Scanner;
 
 public class Jdbc {
 	public static void main(String[] args) {
-		
 		Connection con = null;
 		PreparedStatement pselect = null;
 		PreparedStatement pinsert = null;
@@ -19,7 +18,7 @@ public class Jdbc {
 		PreparedStatement pdelete = null;
 		PreparedStatement pParticularrecord;		
 		ResultSet rs = null;
-	    Scanner scanner = new Scanner(System.in);
+	        Scanner scanner = new Scanner(System.in);
 		Scanner input = new Scanner(System.in);
 		Scanner input1 = new Scanner(System.in);
 		
@@ -185,6 +184,27 @@ public class Jdbc {
 		    	        	  System.out.println("Min value:"+min);
 		    	          }
 		    	          break;
+			    case 5:PreparedStatement pNumberOfMaleEmployees = null;
+		    	           pNumberOfMaleEmployees = con.prepareStatement("SELECT COUNT(*) FROM employee_payroll where gender = 'M' ");		    	           
+		    	           pNumberOfMaleEmployees.execute();
+		    	           rs = pNumberOfMaleEmployees.getResultSet();
+		    	           while(rs.next()) {
+		    	        	   int numberOfMaleEmployees = rs.getInt("count(*)");
+		    	        	   System.out.println("Number of male employees"+numberOfMaleEmployees);
+		    	           }
+		    	           break;
+		    	           
+		    	    case 6:PreparedStatement pNumberOffemaleEmployees = null;
+	    	                   pNumberOffemaleEmployees = con.prepareStatement("SELECT COUNT(*) FROM employee_payroll where gender = 'F' ");		    	           
+	    	                   pNumberOffemaleEmployees .execute();
+	    	                   rs =  pNumberOffemaleEmployees .getResultSet();
+	    	                   while(rs.next()) {
+	    	        	       int  numberOffemaleEmployees  = rs.getInt("count(*)");
+	    	        	       System.out.println("Number of female employees: "+numberOffemaleEmployees);
+	    	                   }
+	    	                   break;
+	    	           
+	    	         default :System.out.println("Invalid choice");
 		    	     }
 		         }
 		      }
