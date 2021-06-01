@@ -65,6 +65,6 @@ public class EmployeePayrollData {
         String departments[] = this.getDepartment();
         for(String s: departments) {
             System.out.println("id: "+this.getId()+":"+s);
-        }
+         }
     }
 }
