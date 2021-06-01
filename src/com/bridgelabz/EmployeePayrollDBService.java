@@ -256,5 +256,5 @@ private Connection getConnection() throws SQLException {
     connection = DriverManager.getConnection(jdbcURL, userName, password);
     System.out.println("Connection successful: " + connection);
     return connection;
-}
+ }
 }
