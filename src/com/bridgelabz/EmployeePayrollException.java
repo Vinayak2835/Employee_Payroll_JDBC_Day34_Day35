@@ -8,5 +8,6 @@ public class EmployeePayrollException extends Exception {
     public EmployeePayrollException(ExceptionType type,String message) {
         super(message);
         this.type = type;
+     
     }
 }
